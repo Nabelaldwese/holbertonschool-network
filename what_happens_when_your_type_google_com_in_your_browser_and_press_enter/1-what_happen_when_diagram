@@ -1,0 +1,45 @@
+1. DNS resolution  
+   - The browser asks the local DNS resolver for the IP of www.google.com.  
+   - The resolver queries the DNS hierarchy (root, TLD, authoritative DNS).  
+   - The authoritative DNS server returns the public IP address of www.google.com
+     to the local DNS resolver, which sends it back to the client.
+
+2. Encrypted connection to the server IP and port  
+   - Using the resolved IP address, the client opens a TCP connection to the
+     server on port 443 (HTTPS).  
+   - A TLS handshake takes place between the client and the server so that the
+     traffic will be encrypted.
+
+3. Traffic passing through the firewall  
+   - The encrypted packets travel through the user’s router, ISP and then
+     reach Google’s edge network.  
+   - An edge firewall inspects the traffic and allows the HTTPS request on
+     port 443 to enter the infrastructure.
+
+4. Load balancer distribution  
+   - After the firewall, the request goes to a load balancer.  
+   - The load balancer distributes incoming HTTPS requests across several
+     backend web servers to balance the load and increase availability.
+
+5. Web server handling the HTTP request  
+   - The selected web server terminates TLS (decrypts the traffic) and reads
+     the HTTP GET request for https://www.google.com.  
+   - The web server forwards the request to an application server.
+
+6. Application server generating the web page  
+   - The application server runs the application logic that decides what
+     content should be shown on the Google home page for this user.  
+   - To build the response, it may need data from a database.
+
+7. Database query  
+   - The application server sends a query to a database server (for example to
+     read configuration, user-specific data, or localization data).  
+   - The database returns the requested data to the application server.
+
+8. Response back to the client  
+   - The application server generates the final HTML for the page and sends it
+     back to the web server.  
+   - The web server sends the HTTP response over the existing TLS connection
+     back through the load balancer, firewall, ISP and router to the client.  
+   - The browser receives the encrypted response, decrypts it via TLS, parses
+     the HTML/CSS/JS and renders the Google home page on the screen.
